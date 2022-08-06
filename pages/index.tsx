@@ -1,14 +1,14 @@
 import type { GetServerSideProps, GetStaticProps, NextPage } from "next";
 import { connectDB } from "../utils/dbConnect";
 import styles from "../styles/Home.module.css";
-import User from "../model/User";
+import Users from "../model/User";
 
 interface Props {
   users: [];
 }
 
 interface IUser {
-  id: number;
+  id: string;
   name: string;
   lastname: string;
   age: number;
@@ -26,22 +26,15 @@ const Home: NextPage<Props> = ({ users }) => {
 
 export const getServerSideProps: GetServerSideProps = async () => {
   await connectDB();
-  const pruebaUsers = await User.find({})
-    .then((users: IUser[]) => console.log(users))
-    .catch((err: Error) => console.log(err));
+  const users = await Users.find({}).catch((err: Error) => console.log(err));
 
-  console.log(pruebaUsers);
+  console.log("USERS:", users);
 
-  let users: any = [];
   return {
     props: {
-      users,
+      users: JSON.parse(JSON.stringify(users)),
     },
   };
 };
-
-// export const getStaticProps: GetStaticProps = async () => {
-
-// };
 
 export default Home;
